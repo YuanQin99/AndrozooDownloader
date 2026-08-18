@@ -1,0 +1,11 @@
+# Keep the repository code-only. Everything is ignored unless explicitly allowed.
+*
+
+!.gitignore
+!apk_download.py
+!read_csv.py
+!filter_yearly.py
+!config.json
+!README.md
+!README_CN.md
+!requirements.txt
