@@ -253,6 +253,9 @@ python apk_download.py --config config.json --no-proxy
 下载结果包含 `sha256`、绝对文件路径、`success`、状态、HTTP 状态码、文件大小、错误原因和
 UTC 完成时间。`success=1` 表示成功，`success=0` 表示失败。
 
+下载时会显示 `tqdm` 进度条，包括已完成数量、总任务数、下载速度、预计剩余时间，以及当前
+成功和失败数量。`max_downloads` 为正整数时会显示确定的总任务数；不限制数量时显示累计完成数。
+
 常见状态：
 
 - `downloaded`：本次成功下载。

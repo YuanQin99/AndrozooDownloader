@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import requests
+from tqdm import tqdm
 
 from read_csv import default_output_path
 
@@ -211,8 +212,14 @@ def run_downloads(settings: dict[str, Any]) -> dict[str, int]:
             rng.shuffle(selected)
             sha256_source = iter(selected)
 
+        download_total = len(selected) if max_downloads > 0 else None
         pending: dict[Future[dict[str, Any]], str] = {}
-        with ProcessPoolExecutor(max_workers=workers) as executor:
+        with tqdm(
+            total=download_total,
+            desc="下载 APK",
+            unit="apk",
+            dynamic_ncols=True,
+        ) as download_progress, ProcessPoolExecutor(max_workers=workers) as executor:
             for sha256 in sha256_source:
                 if not SHA256_PATTERN.fullmatch(sha256):
                     result = make_result(
@@ -248,6 +255,10 @@ def run_downloads(settings: dict[str, Any]) -> dict[str, int]:
                             )
                         write_result(writer, result_file, result)
                         stats["success" if result["success"] == "1" else "failed"] += 1
+                        download_progress.update(1)
+                        download_progress.set_postfix(
+                            success=stats["success"], failed=stats["failed"]
+                        )
 
             while pending:
                 done, _ = wait(pending, return_when=FIRST_COMPLETED)
@@ -265,6 +276,10 @@ def run_downloads(settings: dict[str, Any]) -> dict[str, int]:
                         )
                     write_result(writer, result_file, result)
                     stats["success" if result["success"] == "1" else "failed"] += 1
+                    download_progress.update(1)
+                    download_progress.set_postfix(
+                        success=stats["success"], failed=stats["failed"]
+                    )
     return stats
 
 

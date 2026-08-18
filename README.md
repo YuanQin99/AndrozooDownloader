@@ -257,6 +257,10 @@ python apk_download.py --config config.json --no-proxy
 The result CSV contains the SHA-256, absolute file path, `success` flag, status, HTTP status, file size,
 error details, and UTC completion time. `success=1` means success; `success=0` means failure.
 
+The downloader displays a `tqdm` progress bar with completed and total tasks, throughput, ETA, and current
+success/failure counts. A positive `max_downloads` provides a fixed total; unlimited mode shows the cumulative
+completion count.
+
 Common status values:
 
 - `downloaded`: downloaded successfully in this run.
